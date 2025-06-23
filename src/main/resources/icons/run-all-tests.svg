@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- First play triangle (smaller version of the original run icon) -->
+    <path d="M2 4L8 8L2 12V4Z" fill="#4CAF50"/>
+    <!-- Second play triangle (smaller version of the original run icon) -->
+    <path d="M9 4L15 8L9 12V4Z" fill="#4CAF50"/>
+</svg>

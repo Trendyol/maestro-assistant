@@ -1,0 +1,22 @@
+<!-- Darcula color scheme for Maestro plugin -->
+<list>
+  <option name="MAESTRO_ROOT_KEY">
+    <value>
+      <option name="FOREGROUND" value="CF8E6D" />
+      <option name="FONT_TYPE" value="0" />
+    </value>
+  </option>
+  <option name="MAESTRO_ARGUMENT_KEY">
+    <value>
+      <option name="FOREGROUND" value="4FC3F7" />
+      <option name="FONT_TYPE" value="0" />
+    </value>
+  </option>
+  <option name="MAESTRO_UNKNOWN_KEY">
+    <value>
+      <option name="FOREGROUND" value="FF8A65" />
+      <option name="EFFECT_COLOR" value="FF8A65" />
+      <option name="EFFECT_TYPE" value="2" />
+    </value>
+  </option>
+</list>

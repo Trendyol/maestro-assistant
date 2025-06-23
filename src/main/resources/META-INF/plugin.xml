@@ -1,0 +1,87 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.trendyol.maestro-assistant</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Maestro</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="cemre.unal@trendyol.com" url="https://github.com/Trendyol">Trendyol</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    Maestro plugin that enables syntax highlighting and auto-completion for Maestro UI tests.<br>
+    <ul>
+      <li>Syntax highlighting for Maestro commands</li>
+      <li>Auto-completion for Maestro actions</li>
+      <li>Error detection for invalid Maestro syntax</li>
+      <li>Documentation on hover for Maestro commands</li>
+      <li>Inline display of resolved values for output variables</li>
+    </ul>
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.yaml</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Tool Window for Maestro Tests -->
+        <toolWindow id="Maestro Tests" 
+                   anchor="right"
+                   factoryClass="com.maestro.ide.toolWindow.MaestroTestToolWindowFactory"
+                   icon="/icons/maestro.svg"/>
+        <!-- File type detector for Maestro files -->
+        <fileTypeOverrider implementation="com.maestro.lang.MaestroYamlFileTypeDetector"/>
+        
+        <!-- Code completion for Maestro files -->
+        <completion.contributor language="yaml" implementationClass="com.maestro.ide.completion.MaestroCompletionContributor"/>
+        
+        <!-- Syntax highlighting and validation -->
+        <annotator language="yaml" implementationClass="com.maestro.lang.annotator.MaestroYamlAnnotator"/>
+                   
+        <codeInsight.parameterNameHints language="yaml"
+                   implementationClass="com.maestro.ide.hints.MaestroParameterHintsProvider"/>
+        
+        <psi.referenceContributor language="yaml" implementation="com.maestro.lang.reference.MaestroReferenceContributor"/>
+        
+        <!-- Documentation provider -->
+        <lang.documentationProvider language="yaml" implementationClass="com.maestro.ide.documentation.MaestroDocumentationProvider"/>
+        
+        <!-- Color schemes -->
+        <additionalTextAttributes scheme="Default" file="/colorSchemes/MaestroDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="/colorSchemes/MaestroDarcula.xml"/>
+        
+        <!-- Run Line Marker for Maestro test files -->
+        <runLineMarkerContributor language="yaml" implementationClass="com.maestro.ide.run.MaestroRunLineMarkerContributor"/>
+    </extensions>
+    
+    <!-- Actions -->
+    <actions>
+        <!-- Add Maestro test run action to context menus -->
+        <action id="Maestro.RunTest" 
+                class="com.maestro.ide.actions.RunMaestroTestAction" 
+                text="Run Maestro Test" 
+                description="Run the selected Maestro test file"
+                icon="/icons/run.svg">
+            <!-- Add to Project view context menu -->
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+            <!-- Add to Editor context menu -->
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
+    
+    <!-- Project listeners -->
+    <projectListeners>
+        <listener class="com.maestro.lang.project.MaestroProjectListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
+</idea-plugin>

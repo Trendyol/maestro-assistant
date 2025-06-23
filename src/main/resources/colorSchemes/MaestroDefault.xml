@@ -1,0 +1,22 @@
+<!-- Default color scheme for Maestro plugin -->
+<list>
+  <option name="MAESTRO_ROOT_KEY">
+    <value>
+      <option name="FOREGROUND" value="7B1FA2" />
+      <option name="FONT_TYPE" value="0" />
+    </value>
+  </option>
+  <option name="MAESTRO_ARGUMENT_KEY">
+    <value>
+      <option name="FOREGROUND" value="0288D1" />
+      <option name="FONT_TYPE" value="0" />
+    </value>
+  </option>
+  <option name="MAESTRO_UNKNOWN_KEY">
+    <value>
+      <option name="FOREGROUND" value="FF5722" />
+      <option name="EFFECT_COLOR" value="FF5722" />
+      <option name="EFFECT_TYPE" value="2" />
+    </value>
+  </option>
+</list>
