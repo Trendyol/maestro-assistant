@@ -1,0 +1,88 @@
+name: Auto Release on Version Bump
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'gradle.properties' ]
+
+jobs:
+  check-version-bump:
+    name: Check Version Bump and Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Fetch current and previous commit
+
+      - name: Check if version was bumped
+        id: version-check
+        run: |
+          # Get current version
+          CURRENT_VERSION=$(grep '^pluginVersion' gradle.properties | cut -d'=' -f2 | tr -d ' ')
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          
+          # Get previous version from previous commit
+          git checkout HEAD~1 -- gradle.properties 2>/dev/null || echo "No previous gradle.properties found"
+          PREVIOUS_VERSION=$(grep '^pluginVersion' gradle.properties | cut -d'=' -f2 | tr -d ' ' 2>/dev/null || echo "0.0.0")
+          
+          # Restore current gradle.properties
+          git checkout HEAD -- gradle.properties
+          
+          echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+          echo "Previous version: $PREVIOUS_VERSION"
+          
+          # Check if version was actually bumped
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ] && [ "$CURRENT_VERSION" != "0.0.0" ]; then
+            echo "version_bumped=true" >> $GITHUB_OUTPUT
+            echo "Version was bumped from $PREVIOUS_VERSION to $CURRENT_VERSION"
+          else
+            echo "version_bumped=false" >> $GITHUB_OUTPUT
+            echo "No version bump detected"
+          fi
+
+      - name: Set up Java
+        if: steps.version-check.outputs.version_bumped == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        if: steps.version-check.outputs.version_bumped == 'true'
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Generate changelog
+        if: steps.version-check.outputs.version_bumped == 'true'
+        id: changelog
+        run: |
+          # Try to get changelog for current version, fallback to commit messages
+          CHANGELOG=$(./gradlew -q getChangelog --no-header --unreleased 2>/dev/null || echo "")
+          
+          if [ -z "$CHANGELOG" ] || [ "$CHANGELOG" = "### Added" ] || [ "$CHANGELOG" = "### Changed" ] || [ "$CHANGELOG" = "### Deprecated" ] || [ "$CHANGELOG" = "### Removed" ] || [ "$CHANGELOG" = "### Fixed" ] || [ "$CHANGELOG" = "### Security" ]; then
+            # Fallback to recent commit messages
+            CHANGELOG="## What's Changed"$'\n\n'"$(git log --oneline --since='1 week ago' --pretty=format:'- %s' | head -10)"
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.version-check.outputs.version_bumped == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: v${{ steps.version-check.outputs.current_version }}
+          RELEASE_NAME: Release ${{ steps.version-check.outputs.current_version }}
+        run: |
+          echo "Creating release $TAG_NAME"
+          
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_NAME" \
+            --notes "${{ steps.changelog.outputs.changelog }}" \
+            --target main
+          
+          echo "✅ Release $TAG_NAME created successfully!"
+          echo "🚀 The release workflow will now automatically publish the plugin to JetBrains Marketplace."
