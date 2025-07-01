@@ -82,7 +82,8 @@ jobs:
           gh release create "$TAG_NAME" \
             --title "$RELEASE_NAME" \
             --notes "${{ steps.changelog.outputs.changelog }}" \
-            --target main
+            --target main \
+            --latest
           
           echo "✅ Release $TAG_NAME created successfully!"
           echo "🚀 The release workflow will now automatically publish the plugin to JetBrains Marketplace."
