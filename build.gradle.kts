@@ -10,10 +10,10 @@ plugins {
     alias(libs.plugins.changelog)
 }
 val pluginGroup: String by project.properties
-val pluginVersion: String by project.properties
+val currentPluginVersion: String by project.properties
 
 group = pluginGroup
-version = pluginVersion
+version = currentPluginVersion
 
 repositories {
     google()
@@ -73,7 +73,7 @@ dependencies {
 
 changelog {
     val pluginRepositoryUrl: String by project.properties
-    version = pluginVersion
+    version = currentPluginVersion
     repositoryUrl = pluginRepositoryUrl
 }
 
@@ -84,8 +84,7 @@ tasks {
     }
 
     patchPluginXml {
-        // Sanitize version to remove invalid characters for file naming
-        version = pluginVersion.toString().replace(Regex("[\":><|*?\\\\//]"), "_")
+        version = currentPluginVersion
         sinceBuild = pluginSinceBuild
 
         pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
@@ -122,6 +121,11 @@ tasks {
         certificateChain = environment("CERTIFICATE_CHAIN")
         privateKey = environment("PRIVATE_KEY")
         password = environment("PRIVATE_KEY_PASSWORD")
+    }
+
+    buildPlugin {
+        archiveBaseName.set("maestro-assistant")
+        archiveVersion.set(currentPluginVersion)
     }
 
     publishPlugin {
