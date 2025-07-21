@@ -46,8 +46,8 @@ IDEs. Write, validate, and run your Maestro YAML tests with confidence—no term
 3. Go to **Build > Prepare Plugin Module for Deployment**.
 4. Install the generated `.zip` via **Settings > Plugins > Install Plugin from Disk…**
 
-**Marketplace:**  
-_Coming soon!_
+**Jetbrains Marketplace:**  
+[Maestro-Assistant](https://plugins.jetbrains.com/plugin/27807-maestro-assistant)
 
 ---
 
