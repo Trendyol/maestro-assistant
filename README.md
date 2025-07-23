@@ -53,7 +53,7 @@ IDEs. Write, validate, and run your Maestro YAML tests with confidence—no term
 
 ### 2. Usage
 
-1. **Open or create your Maestro YAML test files (`.yaml`/`.yml`)**.
+1. **Open or create your Maestro YAML test files (`.yaml`/`.yml`)** in `maestro` or `.maestro` folder.
 2. Enjoy auto-completion, error highlighting, and command documentation as you type.
 3. Use the **“Maestro Tests”** tool window to explore and run tests right in your project.
 4. Right-click a test file or use the context menu and select **Run Maestro Test**.
