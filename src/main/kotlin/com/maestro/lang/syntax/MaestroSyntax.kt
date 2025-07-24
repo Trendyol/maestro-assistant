@@ -231,28 +231,6 @@ sealed interface MaestroSyntax {
             override val documentationUrl: String = "https://docs.maestro.dev/api-reference/commands/pastetext"
         }
 
-        data object AssertMarketingEvent : Command {
-            override val key: String = "assertMarketingEvent"
-            override val textAttributesKey: TextAttributesKey = ROOT_KEY
-            override val allowedSubCommands: Set<Command> =
-                COMMON_ARGUMENTS + setOf(Query, EventType, Parameters, Rules)
-        }
-
-        data object AssertVisual : Command {
-            override val key: String = "assertVisual"
-            override val textAttributesKey: TextAttributesKey = ROOT_KEY
-            override val allowedSubCommands: Set<Command> =
-                COMMON_ARGUMENTS + setOf(
-                    Baseline, ThresholdPercentage, DelayMs, SilentError, CropOnRootContent, CropOn
-                )
-        }
-
-        data object AssertMarketingEvents : Command {
-            override val key: String = "assertMarketingEvents"
-            override val textAttributesKey: TextAttributesKey = ROOT_KEY
-            override val allowedSubCommands: Set<Command> = COMMON_ARGUMENTS + setOf(Query, EventType, MinSize, MaxSize)
-        }
-
         data object ClearMarketingEvents : Command {
             override val key: String = "clearMarketingEvents"
             override val textAttributesKey: TextAttributesKey = ROOT_KEY
