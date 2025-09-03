@@ -52,17 +52,63 @@
     
     <!-- Actions -->
     <actions>
-        <!-- Add Maestro test run action to context menus -->
-        <action id="Maestro.RunTest" 
-                class="com.maestro.ide.actions.RunMaestroTestAction" 
-                text="Run Maestro Test" 
-                description="Run the selected Maestro test file"
-                icon="/icons/run.svg">
+        <!-- Action group for Maestro test run actions with submenu -->
+        <group id="Maestro.RunTestGroup" 
+               text="Run Maestro Test" 
+               description="Run the selected Maestro test file"
+               icon="/icons/run.svg"
+               popup="true">
+            
+            <!-- Default run action (no locale specified) -->
+            <action id="Maestro.RunTest" 
+                    class="com.maestro.ide.actions.RunMaestroTestAction" 
+                    text="Run Maestro Test" 
+                    description="Run the selected Maestro test file"
+                    icon="/icons/run.svg"/>
+            
+            <!-- Separator -->
+            <separator/>
+            
+            <!-- Turkish locale action -->
+            <action id="Maestro.RunTestTR" 
+                    class="com.maestro.ide.actions.RunMaestroTestTRAction" 
+                    text="Run in TR" 
+                    description="Run the selected Maestro test file with Turkish locale"
+                    icon="/icons/run.svg"/>
+            
+            <!-- Arabic locale action -->
+            <action id="Maestro.RunTestAR" 
+                    class="com.maestro.ide.actions.RunMaestroTestARAction" 
+                    text="Run in AR" 
+                    description="Run the selected Maestro test file with Arabic locale"
+                    icon="/icons/run.svg"/>
+            
+            <!-- Turkish Azerbaijan locale action -->
+            <action id="Maestro.RunTestTRAZ" 
+                    class="com.maestro.ide.actions.RunMaestroTestTRAZAction" 
+                    text="Run in TR-AZ" 
+                    description="Run the selected Maestro test file with Turkish Azerbaijan locale"
+                    icon="/icons/run.svg"/>
+            
+            <!-- Romanian locale action -->
+            <action id="Maestro.RunTestRO" 
+                    class="com.maestro.ide.actions.RunMaestroTestROAction" 
+                    text="Run in RO" 
+                    description="Run the selected Maestro test file with Romanian locale"
+                    icon="/icons/run.svg"/>
+            
+            <!-- English Saudi Arabia locale action -->
+            <action id="Maestro.RunTestENSA" 
+                    class="com.maestro.ide.actions.RunMaestroTestENSAAction" 
+                    text="Run in EN-SA" 
+                    description="Run the selected Maestro test file with English Saudi Arabia locale"
+                    icon="/icons/run.svg"/>
+            
             <!-- Add to Project view context menu -->
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <!-- Add to Editor context menu -->
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-        </action>
+        </group>
     </actions>
     
     <!-- Project listeners -->

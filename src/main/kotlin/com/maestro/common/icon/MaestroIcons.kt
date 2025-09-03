@@ -15,6 +15,13 @@ object MaestroIcons {
     val REFRESH_ICON: Icon = IconLoader.getIcon("/icons/refresh.svg", MaestroIcons::class.java)
     val RUN_ICON: Icon = IconLoader.getIcon("/icons/run.svg", MaestroIcons::class.java)
     val STOP_ICON: Icon = IconLoader.getIcon("/icons/stop.svg", MaestroIcons::class.java)
+    
+    // Flag icons for locale-specific actions
+    val FLAG_TR: Icon = IconLoader.getIcon("/icons/flag-tr.svg", MaestroIcons::class.java)
+    val FLAG_AR: Icon = IconLoader.getIcon("/icons/flag-ar.svg", MaestroIcons::class.java)
+    val FLAG_AZ: Icon = IconLoader.getIcon("/icons/flag-az.svg", MaestroIcons::class.java)
+    val FLAG_RO: Icon = IconLoader.getIcon("/icons/flag-ro.svg", MaestroIcons::class.java)
+    val FLAG_SA: Icon = IconLoader.getIcon("/icons/flag-sa.svg", MaestroIcons::class.java)
 
     /**
      * Loads an icon from the plugin resources

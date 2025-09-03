@@ -5,6 +5,11 @@ import com.intellij.psi.PsiElement
 import com.maestro.common.extension.getTestStatus
 import com.maestro.common.icon.MaestroIcons
 import com.maestro.ide.actions.RunMaestroTestAction
+import com.maestro.ide.actions.RunMaestroTestTRAction
+import com.maestro.ide.actions.RunMaestroTestARAction
+import com.maestro.ide.actions.RunMaestroTestTRAZAction
+import com.maestro.ide.actions.RunMaestroTestROAction
+import com.maestro.ide.actions.RunMaestroTestENSAAction
 import com.maestro.ide.service.model.TestStatus
 import com.maestro.lang.schema.MaestroFileDetector
 import org.jetbrains.yaml.psi.YAMLFile
@@ -50,11 +55,16 @@ class MaestroRunLineMarkerContributor : RunLineMarkerContributor() {
         // Get icon based on status
         val icon = MaestroIcons.RUN_ICON
 
-        // Create a single action that will run the test
-        val action = RunMaestroTestAction()
+        // Create actions for different run options
+        val defaultAction = RunMaestroTestAction()
+        val trAction = RunMaestroTestTRAction()
+        val arAction = RunMaestroTestARAction()
+        val trazAction = RunMaestroTestTRAZAction()
+        val roAction = RunMaestroTestROAction()
+        val ensaAction = RunMaestroTestENSAAction()
 
-        // Return the line marker info with our run icon
-        return Info(icon, arrayOf(action), generateJavaTooltipProvider(status))
+        // Return the line marker info with our run icon and multiple actions
+        return Info(icon, arrayOf(defaultAction, trAction, arAction, trazAction, roAction, ensaAction), generateJavaTooltipProvider(status))
     }
 
     private fun generateJavaTooltipProvider(status: TestStatus?): Function<PsiElement, String> {
