@@ -22,6 +22,9 @@ class MaestroTestExecutor(private val project: Project) {
     companion object {
         private const val MAESTRO_COMMAND = "maestro"
         private const val MAESTRO_TEST_COMMAND = "test"
+        private const val PL_APP_ID = "com.trendyol.milla.android.stage"
+        private const val DEFAULT_APP_ID = "trendyol.com.stage"
+        private const val PL_APP_PATH_INDICATOR = "pl-app"
     }
 
     /**
@@ -38,6 +41,15 @@ class MaestroTestExecutor(private val project: Project) {
 
         // Build command parameters
         val parameters = mutableListOf(MAESTRO_TEST_COMMAND)
+
+        // Add APP_ID parameter based on test path
+        val appId = if (test.path.contains(PL_APP_PATH_INDICATOR, ignoreCase = true)) {
+            PL_APP_ID
+        } else {
+            DEFAULT_APP_ID
+        }
+        parameters.add("-e")
+        parameters.add("APP_ID=$appId")
 
         // Add any additional CLI arguments
         if (test.commandLineArgs.isNotEmpty()) {

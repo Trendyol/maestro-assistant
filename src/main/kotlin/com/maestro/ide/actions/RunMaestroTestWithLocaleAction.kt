@@ -61,6 +61,7 @@ open class RunMaestroTestWithLocaleAction(
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return
 
         // Create a MaestroTest with locale-specific environment variables
+        // Note: APP_ID=com.trendyol.milla.android.stage is automatically added by MaestroTestExecutor
         val maestroTest = MaestroTest(
             path = testPath,
             commandLineArgs = "-e LANGUAGE=$language -e COUNTRY=$country"
