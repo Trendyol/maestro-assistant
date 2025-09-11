@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blue stripe (top) -->
   <rect width="16" height="5.33" fill="#0092C7"/>
+  
+  <!-- Red stripe (middle) -->
   <rect width="16" height="5.33" y="5.33" fill="#ED2939"/>
+  
+  <!-- Green stripe (bottom) -->
   <rect width="16" height="5.33" y="10.67" fill="#00B04F"/>
-  <circle cx="7" cy="8" r="2.5" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
-  <path d="M8.5 6 L9.5 7 L8.8 8.2 L7.7 8.2 L7 7 Z" fill="#FFFFFF"/>
-</svg>
+  
+  <!-- White crescent moon -->
+  <circle cx="6.5" cy="8" r="2.2" fill="#FFFFFF"/>
+  <circle cx="7.2" cy="8" r="1.8" fill="#ED2939"/>
 
+  <!-- White eight-pointed star -->
+  <path d="M9.5 6.2 L10.1 7.4 L11.5 7.4 L10.4 8.2 L10.8 9.5 L9.5 8.7 L8.2 9.5 L8.6 8.2 L7.5 7.4 L8.9 7.4 Z" fill="#FFFFFF"/>
+
+</svg>
