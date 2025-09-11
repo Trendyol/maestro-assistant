@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.kotlinxSerialization)
     implementation(libs.okhttp)
     implementation(libs.markdown)
+    implementation("org.yaml:snakeyaml:2.0")
+    
+    testImplementation("junit:junit:4.13.2")
 }
 
 changelog {
@@ -144,6 +147,10 @@ tasks {
     // Disable instrumentation task due to Java 21 compatibility issue
     // This is a known issue with Microsoft OpenJDK builds
     instrumentCode {
+        enabled = false
+    }
+    
+    instrumentTestCode {
         enabled = false
     }
 }

@@ -1,6 +1,7 @@
 package com.maestro.ide.run
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
 import com.maestro.common.extension.getTestStatus
 import com.maestro.common.icon.MaestroIcons
@@ -55,16 +56,38 @@ class MaestroRunLineMarkerContributor : RunLineMarkerContributor() {
         // Get icon based on status
         val icon = MaestroIcons.RUN_ICON
 
-        // Create actions for different run options
-        val defaultAction = RunMaestroTestAction()
-        val trAction = RunMaestroTestTRAction()
-        val arAction = RunMaestroTestARAction()
-        val trazAction = RunMaestroTestTRAZAction()
-        val roAction = RunMaestroTestROAction()
-        val ensaAction = RunMaestroTestENSAAction()
+        // Parse tags from the file to determine available regions
+        // Use file.text instead of virtualFile to get the current content
+        val tags = MaestroFileDetector.parseTagsFromContent(fileText)
+        val availableRegions = MaestroFileDetector.getAvailableRegions(tags)
+        
+        // Create actions based on available regions
+        val actions = mutableListOf<AnAction>()
+        
+        // Always add the default action first
+        actions.add(RunMaestroTestAction())
+        
+        // Add region-specific actions based on available tags
+        // If no expected regions found, default to TR only
+        val regionsToShow = if (availableRegions.isEmpty()) {
+            setOf("TR")
+        } else {
+            availableRegions
+        }
+        
+        // Add actions for each available region
+        regionsToShow.forEach { region ->
+            when (region) {
+                "TR" -> actions.add(RunMaestroTestTRAction())
+                "AR" -> actions.add(RunMaestroTestARAction())
+                "AZ" -> actions.add(RunMaestroTestTRAZAction())
+                "RO" -> actions.add(RunMaestroTestROAction())
+                "SA" -> actions.add(RunMaestroTestENSAAction())
+            }
+        }
 
-        // Return the line marker info with our run icon and multiple actions
-        return Info(icon, arrayOf(defaultAction, trAction, arAction, trazAction, roAction, ensaAction), generateJavaTooltipProvider(status))
+        // Return the line marker info with our run icon and dynamic actions
+        return Info(icon, actions.toTypedArray(), generateJavaTooltipProvider(status))
     }
 
     private fun generateJavaTooltipProvider(status: TestStatus?): Function<PsiElement, String> {

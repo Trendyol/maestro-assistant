@@ -34,12 +34,33 @@ open class RunMaestroTestWithLocaleAction(
         val project = e.project
         val virtualFile = getTargetFile(e)
 
-        // Enable the action if we have a valid project and the file is a Maestro test
-        val enabled = project != null && virtualFile != null && MaestroFileDetector.isMaestroFile(virtualFile)
-        presentation.isEnabledAndVisible = enabled
+        // Check if this is a valid Maestro test file
+        val isMaestroFile = project != null && virtualFile != null && MaestroFileDetector.isMaestroFile(virtualFile)
+        
+        if (!isMaestroFile) {
+            presentation.isEnabledAndVisible = false
+            return
+        }
 
-        // Update the text and icon
-        if (enabled) {
+        // Parse tags to check if this region should be available
+        val psiFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE)
+        val fileText = psiFile?.text ?: ""
+        val tags = MaestroFileDetector.parseTagsFromContent(fileText)
+        val availableRegions = MaestroFileDetector.getAvailableRegions(tags)
+        
+        // Determine if this specific region should be shown
+        val shouldShow = if (availableRegions.isEmpty()) {
+            // If no regions found, only show TR
+            country == "TR"
+        } else {
+            // Show only if this region is in the available regions
+            availableRegions.contains(country)
+        }
+
+        presentation.isEnabledAndVisible = shouldShow
+
+        // Update the text and icon if visible
+        if (shouldShow) {
             presentation.text = displayText
             presentation.icon = icon
         }

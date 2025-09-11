@@ -3,6 +3,7 @@ package com.maestro.lang.schema
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
+import org.yaml.snakeyaml.Yaml
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -190,6 +191,76 @@ object MaestroFileDetector {
             LOG.debug("Error checking if file is YAML: ${e.message}")
             return false
         }
+    }
+
+    /**
+     * Parse tags from a Maestro YAML test file content
+     * @param content The YAML content of the test file
+     * @return Set of tags found in the file, empty set if no tags or parsing fails
+     */
+    fun parseTagsFromContent(content: String): Set<String> {
+        if (content.isBlank()) {
+            return emptySet()
+        }
+
+        try {
+            val yaml = Yaml()
+            
+            // Split by document separator if present and parse the first document
+            val firstDocument = content.split("---").firstOrNull()?.trim() ?: content
+            
+            val data = yaml.load<Map<String, Any>>(firstDocument) ?: return emptySet()
+            
+            val tags = data["tags"]
+            return when (tags) {
+                is List<*> -> tags.filterIsInstance<String>().toSet()
+                is String -> setOf(tags)
+                else -> emptySet()
+            }
+        } catch (e: Exception) {
+            LOG.debug("Error parsing tags from YAML content: ${e.message}")
+            return emptySet()
+        }
+    }
+
+    /**
+     * Parse tags from a Maestro YAML test file
+     * @param file The virtual file to parse tags from
+     * @return Set of tags found in the file, empty set if no tags or parsing fails
+     */
+    fun parseTagsFromFile(file: VirtualFile): Set<String> {
+        try {
+            // Skip files that are too big, binary, or not readable
+            if (!file.isValid || !file.exists() || file.isDirectory || file.length > 1024 * 1024) {
+                return emptySet()
+            }
+
+            // Read file content
+            val content = if (file.isInLocalFileSystem) {
+                val path = file.path
+                FileUtil.loadFile(java.io.File(path), "UTF-8")
+            } else {
+                file.inputStream.use {
+                    it.reader(Charsets.UTF_8).readText()
+                }
+            }
+
+            return parseTagsFromContent(content)
+        } catch (e: Exception) {
+            LOG.debug("Error reading file for tag parsing: ${e.message}")
+            return emptySet()
+        }
+    }
+
+    /**
+     * Get the available regions from tags, filtering for expected region tags
+     * Expected region tags: TR, AR, AZ, RO, SA
+     * @param tags Set of all tags from the test file
+     * @return Set of region tags that match expected regions
+     */
+    fun getAvailableRegions(tags: Set<String>): Set<String> {
+        val expectedRegions = setOf("TR", "AR", "AZ", "RO", "SA")
+        return tags.intersect(expectedRegions)
     }
 
     /**
