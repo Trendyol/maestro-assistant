@@ -27,7 +27,7 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 val pluginSinceBuild: String by project.properties
