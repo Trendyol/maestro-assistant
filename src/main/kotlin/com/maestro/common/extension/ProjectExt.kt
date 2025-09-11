@@ -33,7 +33,7 @@ fun Project.getRelativePath(filePath: String): String {
  */
 fun Project.getAllTests(): List<MaestroTest> {
     val projectPath = basePath ?: return emptyList()
-    val maestroDirectory = File(projectPath, ".maestro")
+    val maestroDirectory = File(projectPath, "maestro")
 
     // Return empty list if .maestro directory doesn't exist
     if (!maestroDirectory.exists() || !maestroDirectory.isDirectory) {
