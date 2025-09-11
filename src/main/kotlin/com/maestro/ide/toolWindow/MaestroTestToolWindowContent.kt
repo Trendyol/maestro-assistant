@@ -65,7 +65,7 @@ class MaestroTestToolWindowContent(private val project: Project) : Disposable {
     private val searchField = SearchTextField()
     private val argsField = SearchTextField().apply {
         textEditor.emptyText.text = "Additional Maestro command line arguments (APP_ID is automatically included)"
-        toolTipText = "E.g., --include-tags=highest,event (Note: APP_ID is automatically added - com.trendyol.milla.android.stage for pl-app tests, trendyol.com.stage for others)"
+        toolTipText = "E.g., --include-tags=highest,event (Note: APP_ID is automatically added - com.trendyol.milla.android.stage for pl-app tests, trendyol.com.stage for others. You can override by providing -e APP_ID=your.app.id)"
     }
     private val statusLabel = JLabel("Ready")
 

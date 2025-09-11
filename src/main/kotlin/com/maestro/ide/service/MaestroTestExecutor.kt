@@ -3,6 +3,7 @@ package com.maestro.ide.service
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -20,6 +21,7 @@ import java.io.File
 class MaestroTestExecutor(private val project: Project) {
 
     companion object {
+        private val LOG = Logger.getInstance(MaestroTestExecutor::class.java)
         private const val MAESTRO_COMMAND = "maestro"
         private const val MAESTRO_TEST_COMMAND = "test"
         private const val PL_APP_ID = "com.trendyol.milla.android.stage"
@@ -42,14 +44,45 @@ class MaestroTestExecutor(private val project: Project) {
         // Build command parameters
         val parameters = mutableListOf(MAESTRO_TEST_COMMAND)
 
-        // Add APP_ID parameter based on test path
-        val appId = if (test.path.contains(PL_APP_PATH_INDICATOR, ignoreCase = true)) {
-            PL_APP_ID
+        // Enhanced debug logging
+        LOG.info("=== MAESTRO TEST EXECUTOR DEBUG ===")
+        LOG.info("Test path: '${test.path}'")
+        LOG.info("Command line args: '${test.commandLineArgs}'")
+        LOG.info("Project base path: '$projectBasePath'")
+        
+        // Check if command line arguments already contain APP_ID
+        val hasAppIdInArgs = test.commandLineArgs.contains("APP_ID=", ignoreCase = true)
+        LOG.info("Command line args contain APP_ID: $hasAppIdInArgs")
+        
+        // Add APP_ID parameter based on test path only if not already provided in args
+        if (!hasAppIdInArgs) {
+            // Normalize path separators for cross-platform compatibility
+            val normalizedPath = test.path.replace('\\', '/')
+            val normalizedProjectPath = projectBasePath.replace('\\', '/')
+            
+            // Check both the relative test path and the project base path for pl-app indicator
+            val testPathContainsPlApp = normalizedPath.contains(PL_APP_PATH_INDICATOR, ignoreCase = true)
+            val projectPathContainsPlApp = normalizedProjectPath.contains(PL_APP_PATH_INDICATOR, ignoreCase = true)
+            val containsPlApp = testPathContainsPlApp || projectPathContainsPlApp
+            
+            val appId = if (containsPlApp) {
+                PL_APP_ID
+            } else {
+                DEFAULT_APP_ID
+            }
+            
+            LOG.info("Normalized test path: '$normalizedPath'")
+            LOG.info("Normalized project path: '$normalizedProjectPath'")
+            LOG.info("Test path contains '$PL_APP_PATH_INDICATOR': $testPathContainsPlApp")
+            LOG.info("Project path contains '$PL_APP_PATH_INDICATOR': $projectPathContainsPlApp")
+            LOG.info("Overall contains '$PL_APP_PATH_INDICATOR': $containsPlApp")
+            LOG.info("Selected appId: $appId")
+            
+            parameters.add("-e")
+            parameters.add("APP_ID=$appId")
         } else {
-            DEFAULT_APP_ID
+            LOG.info("APP_ID already provided in command line arguments: '${test.commandLineArgs}'")
         }
-        parameters.add("-e")
-        parameters.add("APP_ID=$appId")
 
         // Add any additional CLI arguments
         if (test.commandLineArgs.isNotEmpty()) {
@@ -59,7 +92,19 @@ class MaestroTestExecutor(private val project: Project) {
         // Add the test path as the last parameter
         parameters.add(absoluteTestPath)
 
-        return commandLine.withParameters(parameters)
+        val finalCommandLine = commandLine.withParameters(parameters)
+        LOG.info("Final command line: ${finalCommandLine.commandLineString}")
+        LOG.info("Final parameters: $parameters")
+        
+        // Check for multiple APP_ID parameters in final command
+        val appIdParams = parameters.filter { it.startsWith("APP_ID=") }
+        if (appIdParams.size > 1) {
+            LOG.warn("Multiple APP_ID parameters found: $appIdParams - Last one will be used!")
+        }
+        
+        LOG.info("=== END MAESTRO TEST EXECUTOR DEBUG ===")
+        
+        return finalCommandLine
     }
 
     /**
