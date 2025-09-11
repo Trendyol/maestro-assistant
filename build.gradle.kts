@@ -27,7 +27,8 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(17)
+//    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 val pluginSinceBuild: String by project.properties
@@ -142,15 +143,5 @@ tasks {
         dependsOn("patchChangelog")
         token = environment("PUBLISH_TOKEN")
         channels.set(listOf("default"))
-    }
-    
-    // Disable instrumentation task due to Java 21 compatibility issue
-    // This is a known issue with Microsoft OpenJDK builds
-    instrumentCode {
-        enabled = false
-    }
-    
-    instrumentTestCode {
-        enabled = false
     }
 }
