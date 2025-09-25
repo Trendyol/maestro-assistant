@@ -1,3 +1,5 @@
+
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Trendyol/maestro-assistant/badge)](https://scorecard.dev/viewer/?uri=github.com/Trendyol/maestro-assistant)
 <!-- Plugin description -->
 # Maestro Assistant IntelliJ Plugin
 
